@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  #servicio de base de datos local
+  db:
+    image: postgres:15-alpine
+    container_name: parking_db_container
+    restart: always
+    environment:
+      #dcoker lee esto del .env y se lo pasa a postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  #Spring Boot
+  backend:
+    build:
+      context: ./parking-backend #apunta a mi carpeta Java
+      dockerfile: Dockerfile
+    container_name: parking_api
+    depends_on:
+      - db
+    ports:
+      - "${APP_PORT}:8080"
+    environment:
+      #construimos la url que usara parking backend
+      #db es el nombre del servicio de arriba, docker usa la ip solo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      # 
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    volumes:
+      #para guardar logs fuera del contenedor si quisieras
+      - ./logs:/app/logs
+
+volumes:
+  postgres_data:
