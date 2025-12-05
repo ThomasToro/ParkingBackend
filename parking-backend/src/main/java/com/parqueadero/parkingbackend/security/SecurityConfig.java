@@ -15,6 +15,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity
+
+//este arhcivo lo que se encarga es de decir que rutas necesitan autenticacion y cuales no, en este caso, login no necesita
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
