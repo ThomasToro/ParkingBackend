@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import javax.management.RuntimeErrorException;
@@ -87,6 +88,8 @@ public class ParkingService {
 
 
     }
+
+
     
 
     private BigDecimal calcularCosto(Ticket ticket){
@@ -108,6 +111,12 @@ public class ParkingService {
         //tenemos que retornar un bigdecimal porque ese es el tipo de nuestra funcion
         return tarifa.getPrecio().multiply(new BigDecimal(horas));
 
+    }
+
+
+    public List<Ticket> obtenerVehiculosEnParqueadero() {
+        //usamos el metodo que ya creado
+        return ticketRepository.findByEstadoTicket("ACTIVO");
     }
 
 

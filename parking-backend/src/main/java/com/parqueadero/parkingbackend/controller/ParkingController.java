@@ -11,7 +11,10 @@ import org.springframework.security.access.prepost.PreAuthorize; // Important
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.parqueadero.parkingbackend.service.ParkingService;
@@ -46,6 +49,18 @@ public class ParkingController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/vehiculos-activos")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
+    public ResponseEntity<List<Ticket>> verVehiculosParqueados() {
+        List<Ticket> ticketsActivos = parkingService.obtenerVehiculosEnParqueadero();
+        
+        if (ticketsActivos.isEmpty()) {
+            return ResponseEntity.noContent().build(); //204 si esta vacio
+        }
+        
+        return ResponseEntity.ok(ticketsActivos); //retorna 200 con la lista de tickets
     }
     
     

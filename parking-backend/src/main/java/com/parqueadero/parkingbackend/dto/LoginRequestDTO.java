@@ -4,13 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class AuthDTO {
-
-    @NotBlank(message = "El nombre no puede ir vacio")
-    private String nombre;
+public class LoginRequestDTO {
+    //solo necesitamos estas dos cosas.
     @NotBlank(message = "El correo no puede ir vacio")
     private String correo;
-    @NotBlank(message = "La password no puede ir vacia")
+    
+    @NotBlank(message = "La contraseña no puede ir vacia")
     private String password;
-    private String rol;
 }

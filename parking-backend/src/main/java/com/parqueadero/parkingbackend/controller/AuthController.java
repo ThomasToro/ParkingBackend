@@ -2,6 +2,7 @@ package com.parqueadero.parkingbackend.controller;
 
 import com.parqueadero.parkingbackend.dto.AuthDTO;
 import com.parqueadero.parkingbackend.dto.AuthResponseDTO;
+import com.parqueadero.parkingbackend.dto.LoginRequestDTO;
 import com.parqueadero.parkingbackend.entity.Usuario;
 import com.parqueadero.parkingbackend.repository.UsuarioRepository;
 import com.parqueadero.parkingbackend.security.JwtService;
@@ -20,12 +21,12 @@ public class AuthController {
     private final JwtService jwtService;
 
     @PostMapping("/login")
-    public AuthResponseDTO login(@RequestBody AuthDTO authRequest) {
+    public AuthResponseDTO login(@RequestBody LoginRequestDTO loginRequestDto) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getCorreo(), authRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(loginRequestDto.getCorreo(), loginRequestDto.getPassword())
         );
 
-        Usuario usuario = usuarioRepository.findByCorreo(authRequest.getCorreo())
+        Usuario usuario = usuarioRepository.findByCorreo(loginRequestDto.getCorreo())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado")); 
 
         String token = jwtService.generateToken(usuario.getCorreo(), usuario.getRol());

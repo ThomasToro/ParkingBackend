@@ -1,6 +1,7 @@
 package com.parqueadero.parkingbackend.controller;
 
 import com.parqueadero.parkingbackend.dto.AuthDTO;
+import com.parqueadero.parkingbackend.dto.RegisterRequestDTO;
 import com.parqueadero.parkingbackend.entity.Usuario;
 import com.parqueadero.parkingbackend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,22 +23,22 @@ public class UsuarioController {
     //De lo que se encarga este archivo es de crear nuevos usuarios, admin o empleado, solo un admin puede crear nuevos usuarios
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')") 
-    public ResponseEntity<String> crearUsuario(@RequestBody AuthDTO request) {
+    public ResponseEntity<String> crearUsuario(@RequestBody RegisterRequestDTO registerRequestDto) {
         
-        if (usuarioRepository.findByCorreo(request.getCorreo()).isPresent()) {
+        if (usuarioRepository.findByCorreo(registerRequestDto.getCorreo()).isPresent()) {
             return ResponseEntity.badRequest().body("El correo ya esta registrado");
         }
 
         Usuario user = new Usuario();
-        user.setNombre(request.getNombre());
-        user.setCorreo(request.getCorreo());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setNombre(registerRequestDto.getNombre());
+        user.setCorreo(registerRequestDto.getCorreo());
+        user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
         
         //si no mandamos rol, se crea como un empleado
-        if (request.getRol() == null || request.getRol().isEmpty()) {
+        if (registerRequestDto.getRol() == null || registerRequestDto.getRol().isEmpty()) {
             user.setRol("EMPLEADO"); 
         } else {
-            user.setRol(request.getRol());
+            user.setRol(registerRequestDto.getRol());
         }
         
         usuarioRepository.save(user);
